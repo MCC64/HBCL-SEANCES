@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Séance U13 — Passe & Défense 1c1</title>
+<style>
+  :root{
+    --navy:#16324F;
+    --navy-2:#1B3A5C;
+    --orange:#E8722C;
+    --orange-soft:#F7B78C;
+    --green:#3B8F5C;
+    --chalk:#F7F5F0;
+    --card:#FFFFFF;
+    --ink:#1F2937;
+    --slate:#64748B;
+    --line:#E2E5E9;
+    --red:#C0392B;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--chalk);}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:40px;
+  }
+  h1,h2,h3{font-family:"Oswald","Arial Narrow",sans-serif;font-weight:700;letter-spacing:0.02em;margin:0;}
+
+  /* ---- Header ---- */
+  .hero{
+    background:linear-gradient(160deg,var(--navy) 0%, var(--navy-2) 100%);
+    color:#fff;
+    padding:22px 18px 18px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute; right:-40px; top:-40px;
+    width:160px; height:160px; border-radius:50%;
+    border:14px solid rgba(255,255,255,0.06);
+  }
+  .eyebrow{
+    font-size:11px; text-transform:uppercase; letter-spacing:0.14em;
+    color:var(--orange-soft); font-weight:700; margin-bottom:6px;
+  }
+  .hero h1{font-size:22px; line-height:1.25; margin-bottom:10px;}
+  .meta-chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;}
+  .chip{
+    background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.18);
+    color:#fff; font-size:11.5px; padding:5px 10px; border-radius:20px;
+    font-weight:600;
+  }
+  .chip.accent{background:var(--orange); border-color:var(--orange);}
+
+  /* ---- Progress / match clock ---- */
+  .clock-bar{
+    display:flex; gap:3px; padding:14px 18px 0;
+  }
+  .clock-seg{
+    flex:1; height:5px; border-radius:3px; background:var(--line);
+    position:relative; overflow:hidden;
+  }
+  .clock-seg .fill{position:absolute; inset:0; background:var(--orange); width:0%; transition:width .25s;}
+  .clock-labels{
+    display:flex; justify-content:space-between; padding:6px 18px 0;
+    font-size:10px; color:var(--slate); font-weight:600;
+  }
+
+  .wrap{padding:14px 14px 0;}
+
+  .toolbar{
+    display:flex; justify-content:flex-end; margin-bottom:10px;
+  }
+  .toolbar button{
+    background:none; border:1px solid var(--line); color:var(--navy-2);
+    font-size:12px; font-weight:700; padding:6px 12px; border-radius:20px;
+  }
+
+  /* ---- Section cards ---- */
+  .section{
+    background:var(--card);
+    border-radius:14px;
+    margin-bottom:12px;
+    box-shadow:0 1px 3px rgba(16,24,40,0.06);
+    border:1px solid var(--line);
+    overflow:hidden;
+  }
+  .section.done{opacity:0.55;}
+  .sec-head{
+    display:flex; align-items:center; gap:10px;
+    padding:13px 14px;
+    cursor:pointer;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .sec-num{
+    flex:0 0 auto;
+    width:30px; height:30px; border-radius:8px;
+    background:var(--navy-2); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    font-family:"Oswald",sans-serif; font-weight:700; font-size:14px;
+  }
+  .sec-num.orange{background:var(--orange);}
+  .sec-titles{flex:1; min-width:0;}
+  .sec-titles .t1{font-size:14.5px; font-weight:700; color:var(--navy-2); line-height:1.3;}
+  .sec-titles .t2{font-size:11.5px; color:var(--slate); margin-top:1px;}
+  .sec-check{
+    flex:0 0 auto; width:24px; height:24px; border-radius:50%;
+    border:2px solid var(--line); display:flex; align-items:center; justify-content:center;
+  }
+  .sec-check.checked{background:var(--green); border-color:var(--green); color:#fff; font-size:14px;}
+  .chevron{
+    flex:0 0 auto; width:18px; height:18px; color:var(--slate);
+    transition:transform .2s;
+  }
+  .section.open .chevron{transform:rotate(180deg);}
+
+  .sec-body{
+    max-height:0; overflow:hidden; transition:max-height .3s ease;
+  }
+  .section.open .sec-body{max-height:4000px;}
+  .sec-inner{padding:0 14px 16px;}
+
+  .exo-title{font-size:13.5px; font-weight:700; color:var(--navy-2); margin:10px 0 6px;}
+  .duree-tag{
+    display:inline-block; font-size:10.5px; font-weight:700; color:var(--orange);
+    background:#FDEEE3; padding:2px 8px; border-radius:10px; margin-left:6px;
+  }
+  .block{margin-bottom:8px;}
+  .block .lbl{font-size:11.5px; font-weight:700; color:var(--navy-2); display:block; margin-bottom:2px;}
+  .block p{margin:0; font-size:13px; line-height:1.5; color:var(--ink);}
+  ul.consignes{margin:2px 0 0; padding-left:18px;}
+  ul.consignes li{font-size:13px; line-height:1.5; margin-bottom:2px;}
+
+  .diagram-wrap{
+    background:#F4F7F9; border-radius:10px; padding:8px 6px 6px;
+    margin:10px 0; border:1px solid var(--line);
+  }
+  .diagram-wrap svg{display:block; width:100%; height:auto;}
+  .diagram-caption{font-size:10.5px; color:var(--slate); text-align:center; margin-top:4px;}
+
+  .variantes{display:flex; flex-direction:column; gap:6px; margin:8px 0;}
+  .variante{
+    display:flex; gap:8px; padding:8px 10px; border-radius:8px;
+    background:#F8F9FA; border:1px solid var(--line);
+  }
+  .variante .tag{
+    flex:0 0 auto; font-size:10px; font-weight:700; padding:3px 7px; border-radius:6px;
+    color:#fff; height:fit-content; white-space:nowrap;
+  }
+  .variante.facile .tag{background:var(--green);}
+  .variante.difficile .tag{background:var(--navy-2);}
+  .variante p{margin:0; font-size:12.5px; line-height:1.45;}
+
+  .securite{
+    display:flex; gap:8px; align-items:flex-start;
+    background:#FBEAE8; border:1px solid #F3C6C1; border-radius:8px;
+    padding:8px 10px; margin-top:6px;
+  }
+  .securite .ico{
+    flex:0 0 auto; width:18px; height:18px; border-radius:50%;
+    background:var(--red); color:#fff; font-size:12px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .securite p{margin:0; font-size:12px; line-height:1.45; color:#7A2C24; font-style:italic;}
+
+  .keypoints{padding:2px 0;}
+  .kp{
+    display:flex; gap:10px; align-items:flex-start; margin-bottom:8px;
+  }
+  .kp .n{
+    flex:0 0 auto; width:22px; height:22px; border-radius:50%;
+    background:var(--orange); color:#fff; font-size:12px; font-weight:700;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .kp p{margin:0; font-size:13.5px; font-weight:600; color:var(--navy-2); line-height:1.4;}
+
+  .question-box{
+    background:var(--navy-2); color:#fff; border-radius:10px;
+    padding:12px 14px; margin-top:10px; font-size:12.5px; font-style:italic; line-height:1.5;
+  }
+
+  footer{
+    text-align:center; font-size:10.5px; color:var(--slate);
+    padding:18px 20px 0; line-height:1.5;
+  }
+
+  /* legend chips inside diagrams */
+  .legend{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:6px;}
+  .legend span{display:inline-flex; align-items:center; gap:4px; font-size:10px; color:var(--slate);}
+  .legend i{width:9px; height:9px; border-radius:50%; display:inline-block;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">Cycle 1 · Reprise &amp; fondamentaux</div>
+  <h1>Séance U13 Garçons<br>Passe &amp; Défense individuelle</h1>
+  <div class="meta-chips">
+    <span class="chip accent">1h15</span>
+    <span class="chip">8 à 10 joueurs</span>
+    <span class="chip">Intermédiaire</span>
+    <span class="chip">Terrain complet</span>
+    <span class="chip">6+ ballons</span>
+  </div>
+</div>
+
+<div class="clock-bar" id="clockBar"></div>
+<div class="clock-labels"><span>0 min</span><span>75 min</span></div>
+
+<div class="wrap">
+  <div class="toolbar">
+    <button id="toggleAll">Tout déplier</button>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>
+    Cycle 1 (Septembre–Toussaint) — Reprise et fondamentaux individuels<br>
+    Document à usage pédagogique, club amateur
+  </footer>
+</div>
+
+<script>
+// ---------------------------------------------------------------
+// Données de la séance
+// ---------------------------------------------------------------
+const DATA = [
+  {
+    duree: 10, numColor:"navy",
+    titre: "Échauffement",
+    sousTitre: "Motricité & activation passe",
+    exos: [{
+      nom: "Motricité + passes en mouvement",
+      duree: "10 min",
+      objectif: "Réveiller les appuis et la coordination haut/bas du corps, premier contact ballon.",
+      dispositif: "Terrain délimité par plots (20x15m), joueurs par 2 avec un ballon pour 2.",
+      deroulement: "3 min de déplacements variés sans ballon (pas chassés, talons-fesses, montées de genoux, changements de direction au sifflet), puis 7 min de passes en mouvement par 2 en traversant l'espace, intensité croissante.",
+      consignes: ["Regarder le réceptionneur avant de lâcher la passe", "Réceptionner à deux mains devant le corps"],
+      facile: "Passes en marchant.",
+      difficile: "Passes en courant, rythme imposé (3 appuis max avant de repasser).",
+      securite: "Bien espacer les binômes pour éviter les collisions."
+    }]
+  },
+  {
+    duree: 15, numColor:"navy",
+    titre: "Situation d'apprentissage n°1",
+    sousTitre: "Passe/réception en mouvement sans ralentir",
+    exos: [{
+      nom: "Colonnes face à face",
+      duree: "15 min",
+      objectif: "Conserver sa vitesse de course en recevant et en transmettant le ballon.",
+      dispositif: "2 colonnes de joueurs placées l'une en face de l'autre, à la largeur du terrain, un ballon dans l'une des colonnes.",
+      deroulement: "Le porteur s'avance vers la colonne d'en face, passe à un partenaire qui part à sa rencontre, puis va se placer au bout de la colonne opposée. Le réceptionneur répète l'action vers l'autre colonne. Le flux ne s'arrête jamais.",
+      consignes: ["Passe « en avant » du partenaire (pas dans les pieds)", "Ne pas casser sa course pour attendre le ballon", "Enchaîner sans temps mort"],
+      facile: "Réduire la vitesse de course, plots pour matérialiser le couloir.",
+      difficile: "Un joueur supplémentaire perturbe la trajectoire (passif, sans contact).",
+      securite: "",
+      diagram: "sa1"
+    }]
+  },
+  {
+    duree: 15, numColor:"navy",
+    titre: "Situation d'apprentissage n°2",
+    sousTitre: "Défense individuelle 1c1, harcèlement du porteur",
+    exos: [{
+      nom: "Harcèlement du porteur",
+      duree: "15 min",
+      objectif: "Se placer entre son adversaire et le but, orienter le porteur, gêner sans faire faute.",
+      dispositif: "Ateliers de 3 (1 attaquant, 1 défenseur, 1 joueur qui alimente en passes), zone délimitée par plots.",
+      deroulement: "L'attaquant reçoit et tente de progresser vers le but ; le défenseur reste entre lui et la cible, bras actifs, sans charger.",
+      consignes: ["Position fléchie, pas chassés (jamais croisés)", "Regarder le ventre du porteur, pas le ballon"],
+      facile: "Défenseur passif (accompagne sans gêner).",
+      difficile: "Défenseur actif + zone limite à ne pas franchir pour l'attaquant.",
+      securite: "Interdiction de bras tendus/poussée dans le dos — gêner avec le corps, pas avec les mains.",
+      diagram: "sa2"
+    }]
+  },
+  {
+    duree: 20, numColor:"orange",
+    titre: "Jeu global",
+    sousTitre: "Match aménagé à thème",
+    exos: [{
+      nom: "Match 4c4 / 5c5 — marquage individuel",
+      duree: "20 min",
+      objectif: "Réinvestir passe en mouvement et défense individuelle en situation réelle.",
+      dispositif: "Demi-terrain ou terrain complet selon effectif, gardiens si disponibles (sinon petits buts/plots).",
+      deroulement: "Chaque attaquant est marqué par un seul défenseur (marquage individuel strict), on valorise les enchaînements de passes sans ballon posé. 2 périodes de 8-9 min, changement de rôle attaque/défense à la mi-temps.",
+      consignes: ["Garder son attaquant désigné du début à la fin d'une phase", "Enchaîner les passes sans ralentir le jeu"],
+      facile: "2 appuis supplémentaires autorisés en réception.",
+      difficile: "Temps de possession maximum imposé (ex. 10 sec) avant de tirer.",
+      securite: "Arbitrage strict sur les contacts défensifs, siffler tout accrochage.",
+      diagram: "match"
+    }]
+  },
+  {
+    duree: 7, numColor:"navy",
+    titre: "Retour au calme",
+    sousTitre: "Points clés à retenir",
+    exos: []
+  }
+];
+
+const TOTAL = DATA.reduce((s,d)=>s+d.duree,0);
+
+// ---------------------------------------------------------------
+// Schémas SVG (langage visuel identique au PDF)
+// ---------------------------------------------------------------
+function svgCourt(inner, w=340, h=170){
+  return `<svg viewBox="0 0 ${w} ${h}" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+}
+const COURT_LINE = "#2C3E50", ORANGE="#E8722C", NAVY="#16324F", GREEN="#3B8F5C", GREY="#94A3B8";
+
+function player(x,y,color,label,r=10){
+  return `<circle cx="${x}" cy="${y}" r="${r}" fill="${color}" stroke="${COURT_LINE}" stroke-width="1"/>
+  <text x="${x}" y="${y+4}" font-family="Arial" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">${label}</text>`;
+}
+function cone(x,y,size=6){
+  return `<polygon points="${x},${y-size} ${x-size*0.7},${y+size*0.5} ${x+size*0.7},${y+size*0.5}" fill="${ORANGE}" stroke="${COURT_LINE}" stroke-width="0.6"/>`;
+}
+function arrow(x1,y1,x2,y2,color=NAVY,dash=false,w=1.6){
+  const id = "m"+Math.random().toString(36).slice(2,8);
+  return `<defs><marker id="${id}" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="${color}"/></marker></defs>
+  <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${w}" ${dash?'stroke-dasharray="5,4"':''} marker-end="url(#${id})"/>`;
+}
+
+const DIAGRAMS = {
+  sa1: svgCourt(`
+    ${player(34,55,NAVY,"J")}${player(70,55,NAVY,"J")}${player(106,55,NAVY,"J")}
+    ${player(142,55,ORANGE,"J")}
+    <circle cx="160" cy="55" r="3.5" fill="#3B3B3B"/>
+    ${arrow(168,55,222,55,ORANGE,false,1.8)}
+    ${player(238,55,NAVY,"J")}${player(274,55,NAVY,"J")}${player(310,55,NAVY,"J")}${player(346,55,NAVY,"J")}
+    <text x="190" y="100" font-family="Arial" font-size="9.5" fill="${GREY}" text-anchor="middle">Le porteur passe puis va se placer au bout de la colonne d'en face</text>
+  `,380,115),
+
+  sa2: svgCourt(`
+    <rect x="20" y="15" width="120" height="120" fill="#F4F7F9" stroke="${COURT_LINE}" stroke-width="1.2" stroke-dasharray="4,3"/>
+    ${cone(20,15)}${cone(140,15)}${cone(20,135)}${cone(140,135)}
+    ${player(95,75,ORANGE,"A")}
+    ${player(60,75,NAVY,"D")}
+    <circle cx="107" cy="75" r="3" fill="#3B3B3B"/>
+    ${arrow(70,75,90,75,GREY,true,1)}
+    <text x="80" y="152" font-family="Arial" font-size="9" fill="${GREY}" text-anchor="middle">A progresse, D reste</text>
+    <text x="80" y="163" font-family="Arial" font-size="9" fill="${GREY}" text-anchor="middle">entre A et le but</text>
+
+    <rect x="190" y="15" width="120" height="120" fill="#F4F7F9" stroke="${COURT_LINE}" stroke-width="1.2" stroke-dasharray="4,3"/>
+    ${cone(190,15)}${cone(310,15)}${cone(190,135)}${cone(310,135)}
+    <line x1="325" y1="60" x2="325" y2="90" stroke="${COURT_LINE}" stroke-width="4"/>
+    ${player(210,75,ORANGE,"A")}
+    ${player(240,75,NAVY,"D")}
+    ${arrow(240,90,270,80,NAVY,true,1.2)}
+    <text x="250" y="152" font-family="Arial" font-size="9" fill="${GREY}" text-anchor="middle">D harcèle avec les bras,</text>
+    <text x="250" y="163" font-family="Arial" font-size="9" fill="${GREY}" text-anchor="middle">jamais avec le corps</text>
+  `,340,178),
+
+  match: svgCourt(`
+    <rect x="10" y="15" width="320" height="140" fill="#F4F7F9" stroke="${COURT_LINE}" stroke-width="1.3"/>
+    <line x="170" y1="15" x2="170" y2="155" stroke="${COURT_LINE}" stroke-width="0.7" stroke-dasharray="4,3"/>
+    <line x1="12" y1="72" x2="12" y2="98" stroke="${COURT_LINE}" stroke-width="4"/>
+    <line x1="328" y1="72" x2="328" y2="98" stroke="${COURT_LINE}" stroke-width="4"/>
+    ${player(25,85,GREEN,"G",9)}${player(315,85,GREEN,"G",9)}
+    ${[ [210,35],[235,60],[248,85],[235,110] ].map(([x,y])=>{
+      const dx = x+16, dy = y+3;
+      return `<line x1="${x}" y1="${y}" x2="${dx}" y2="${dy}" stroke="${GREY}" stroke-width="0.7" stroke-dasharray="2,2"/>
+      ${player(x,y,ORANGE,"A",8)}${player(dx,dy,NAVY,"D",8)}`;
+    }).join("")}
+    <text x="170" y="167" font-family="Arial" font-size="9" fill="${GREY}" text-anchor="middle">Marquage individuel : chaque défenseur suit son attaquant</text>
+  `,340,178)
+};
+
+const LEGENDS = {
+  echauffement: [["#16324F","Joueur"],["#E8722C","Plot"]],
+  sa1: [["#16324F","Joueur (colonne)"],["#E8722C","Porteur du ballon"]],
+  sa2: [["#E8722C","Attaquant"],["#16324F","Défenseur"]],
+  match: [["#E8722C","Attaque"],["#16324F","Défense"],["#3B8F5C","Gardiens"]],
+};
+
+// ---------------------------------------------------------------
+// Rendu
+// ---------------------------------------------------------------
+function renderLegend(key){
+  return `<div class="legend">${LEGENDS[key].map(([c,l])=>`<span><i style="background:${c}"></i>${l}</span>`).join("")}</div>`;
+}
+
+function renderExo(exo){
+  const diag = exo.diagram ? `
+    <div class="diagram-wrap">
+      ${DIAGRAMS[exo.diagram]}
+      ${renderLegend(exo.diagram)}
+    </div>` : "";
+  const securiteBlock = exo.securite ? `
+    <div class="securite"><div class="ico">!</div><p>${exo.securite}</p></div>` : "";
+  return `
+    <div class="exo-title">${exo.nom}<span class="duree-tag">${exo.duree}</span></div>
+    <div class="block"><span class="lbl">Objectif</span><p>${exo.objectif}</p></div>
+    <div class="block"><span class="lbl">Dispositif</span><p>${exo.dispositif}</p></div>
+    <div class="block"><span class="lbl">Déroulement</span><p>${exo.deroulement}</p></div>
+    <div class="block"><span class="lbl">Consignes clés</span>
+      <ul class="consignes">${exo.consignes.map(c=>`<li>${c}</li>`).join("")}</ul>
+    </div>
+    ${diag}
+    <div class="variantes">
+      <div class="variante facile"><span class="tag">+ facile</span><p>${exo.facile}</p></div>
+      <div class="variante difficile"><span class="tag">+ difficile</span><p>${exo.difficile}</p></div>
+    </div>
+    ${securiteBlock}
+  `;
+}
+
+function renderKeypoints(){
+  const points = [
+    "En passe : ne jamais casser sa course pour recevoir le ballon.",
+    "En défense : se placer entre son adversaire et le but, gêner avec le corps."
+  ];
+  return `
+    <div class="block"><p>Étirements légers en cercle, respiration.</p></div>
+    <div class="keypoints">
+      ${points.map((p,i)=>`<div class="kp"><div class="n">${i+1}</div><p>${p}</p></div>`).join("")}
+    </div>
+    <div class="question-box">« Qu'est-ce qui était le plus difficile aujourd'hui : la passe en mouvement ou la défense ? »</div>
+  `;
+}
+
+const sectionsEl = document.getElementById('sections');
+DATA.forEach((sec, idx)=>{
+  const div = document.createElement('div');
+  div.className = 'section' + (idx===0 ? ' open':'');
+  div.dataset.index = idx;
+  const body = sec.exos.length
+    ? sec.exos.map(renderExo).join("")
+    : renderKeypoints();
+
+  div.innerHTML = `
+    <div class="sec-head">
+      <div class="sec-num ${sec.numColor==='orange'?'orange':''}">${idx+1}</div>
+      <div class="sec-titles">
+        <div class="t1">${sec.titre}</div>
+        <div class="t2">${sec.sousTitre} · ${sec.duree} min</div>
+      </div>
+      <div class="sec-check" data-role="check">✓</div>
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </div>
+    <div class="sec-body"><div class="sec-inner">${body}</div></div>
+  `;
+  sectionsEl.appendChild(div);
+
+  div.querySelector('.sec-head').addEventListener('click', (e)=>{
+    if(e.target.closest('[data-role="check"]')) return;
+    div.classList.toggle('open');
+  });
+  div.querySelector('[data-role="check"]').addEventListener('click', (e)=>{
+    e.stopPropagation();
+    div.classList.toggle('done');
+    e.currentTarget.classList.toggle('checked');
+    e.currentTarget.textContent = div.classList.contains('done') ? '✓' : '';
+    updateClock();
+  });
+});
+
+// Toggle all
+let allOpen = false;
+document.getElementById('toggleAll').addEventListener('click', (e)=>{
+  allOpen = !allOpen;
+  document.querySelectorAll('.section').forEach(s=>s.classList.toggle('open', allOpen));
+  e.target.textContent = allOpen ? 'Tout replier' : 'Tout déplier';
+});
+
+// Match-clock progress bar (based on completed sections' cumulative duration)
+const clockBar = document.getElementById('clockBar');
+DATA.forEach((sec)=>{
+  const seg = document.createElement('div');
+  seg.className = 'clock-seg';
+  seg.style.flexGrow = sec.duree;
+  seg.innerHTML = '<div class="fill"></div>';
+  clockBar.appendChild(seg);
+});
+function updateClock(){
+  document.querySelectorAll('.section').forEach((s, i)=>{
+    const fill = clockBar.children[i].querySelector('.fill');
+    fill.style.width = s.classList.contains('done') ? '100%' : '0%';
+  });
+}
+</script>
+</body>
+</html>
